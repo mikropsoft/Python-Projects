@@ -15,21 +15,20 @@ except ImportError:
 SPECIAL_CHARS = "!#$%&@€₺"
 
 def generate_password(length, use_uppercase, use_lowercase, use_numbers, use_special, allow_repeats):
-    char_sets = [
+    char_sets = ''.join([
         string.ascii_uppercase * use_uppercase,
         string.ascii_lowercase * use_lowercase,
         string.digits * use_numbers,
         SPECIAL_CHARS * use_special
-    ]
-    characters = ''.join(char_sets)
+    ])
     
-    if not characters:
+    if not char_sets:
         raise ValueError("At least one character type must be selected")
     
-    if not allow_repeats and length > len(characters):
+    if not allow_repeats and length > len(char_sets):
         raise ValueError("Length exceeds the number of unique characters available")
     
-    return ''.join(random.choices(characters, k=length) if allow_repeats else random.sample(characters, length))
+    return ''.join(random.choices(char_sets, k=length) if allow_repeats else random.sample(char_sets, length))
 
 def evaluate_password_strength(password):
     length = len(password)
@@ -50,9 +49,7 @@ def evaluate_password_strength(password):
         (0, "Very Weak", "dark red")
     ]
     
-    for threshold, strength, color in strength_levels:
-        if score >= threshold:
-            return strength, color
+    return next((strength, color) for threshold, strength, color in strength_levels if score >= threshold)
 
 class PasswordGeneratorApp:
     def __init__(self, root):
@@ -157,7 +154,7 @@ class PasswordGeneratorApp:
         for password in self.password_history[-5:]:
             self.history_text.insert(tk.END, f"{password}\n")
         self.history_text.config(state=tk.DISABLED)
-        self.history_text.yview(tk.END)
+        self.history_text.see(tk.END)
 
     def clear_history(self):
         self.password_history.clear()
