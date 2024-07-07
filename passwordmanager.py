@@ -115,10 +115,7 @@ class PasswordManagerApp:
         center_window(self.root)
 
     def get_master_password(self):
-        password = simpledialog.askstring("Master Password", "Enter master password:", show='*')
-        if not password:
-            return None
-        return password
+        return simpledialog.askstring("Master Password", "Enter master password:", show='*')
 
     def create_widgets(self):
         self.text_area = scrolledtext.ScrolledText(self.root, width=60, height=20, state=tk.DISABLED)
@@ -180,14 +177,7 @@ class PasswordManagerApp:
         if not is_view and not is_delete:
             tk.Button(button_frame, text="Generate Password", command=lambda: entries["password"].insert(0, generate_password()), width=15).pack(side=tk.LEFT, padx=5)
 
-        def on_submit():
-            site = entries["site"].get()
-            username = entries["username"].get()
-            password = entries["password"].get()
-            if action:
-                action(site, username, password, window)
-
-        tk.Button(button_frame, text="Submit", command=on_submit, width=15).pack(side=tk.LEFT, padx=5)
+        tk.Button(button_frame, text="Submit", command=lambda: action(entries["site"].get(), entries["username"].get(), entries["password"].get(), window), width=15).pack(side=tk.LEFT, padx=5)
 
         if is_view:
             tk.Button(button_frame, text="Copy Username", command=lambda: self.copy_to_clipboard(entries["username"].get()), width=15).pack(side=tk.LEFT, padx=5)
